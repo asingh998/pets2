@@ -24,11 +24,35 @@ $f3->route('GET /', function() {
 });
 
 //order route
-$f3->route('GET /order', function() {
+$f3->route('GET|POST /order', function($f3) {
     //echo '<h1>Order page</h1>';
+
+    //check if form has been posted
+    if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        //validate
+        if (empty($_POST['pet'])) {
+            echo 'Please supply a pet type';
+
+        } else {
+            //data is valid
+            $_SESSION['pet'] = $_POST['pet'];
+            $_SESSION['color'] = $_POST['color'];
+
+            $f3->reroute('summary');
+        }
+    }
 
     $views = new Template();
     echo $views->render('views/pet-order.html');
+});
+
+//summary
+$f3->route('GET /summary', function() {
+    //echo '<h1>Thank you for your order!</h1>';
+
+    $view = new Template();
+    echo $view->render('views/order-summary.html');
+
 });
 
 //Run F3
